@@ -1,6 +1,7 @@
 package ru.ele638.testtranslate.Helpers.Room;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -19,6 +20,9 @@ public interface UserWordDao {
     @Query("SELECT * FROM userword WHERE translateWord is null")
     Flowable<List<UserWord>> getUserWordsWithoutTranslations();
 
+    @Query("SELECT * FROM userword WHERE isFavorite = 1")
+    Flowable<List<UserWord>> getFaoriteUserWord();
+
     @Insert
     void insert(UserWord userWord);
 
@@ -27,4 +31,7 @@ public interface UserWordDao {
 
     @Query("DELETE FROM userword")
     void deleteAll();
+
+    @Delete
+    void delete(UserWord userWord);
 }

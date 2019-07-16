@@ -4,4 +4,6 @@
     <string name="add_word">Add word</string>
     <string name="empty_list">Empty list</string>
     <string name="loading_translations">Loading translations</string>
+    <string name="translator">Translator</string>
+    <string name="favorites">Favorites</string>
 </resources>

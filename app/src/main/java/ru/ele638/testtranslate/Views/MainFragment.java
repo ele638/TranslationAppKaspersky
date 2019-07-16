@@ -16,13 +16,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
+
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -37,6 +42,8 @@ import ru.ele638.testtranslate.Models.UserWord;
 import ru.ele638.testtranslate.Network.YaTranslateApi;
 import ru.ele638.testtranslate.R;
 import ru.ele638.testtranslate.ViewModels.MainViewModel;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class MainFragment extends Fragment {
 
@@ -76,6 +83,11 @@ public class MainFragment extends Fragment {
         srcLangSpinner = view.findViewById(R.id.main_source_lang_spinner);
         destLangSpinner = view.findViewById(R.id.main_dest_lang_spinner);
         langSwitchBtn = view.findViewById(R.id.main_lang_switch);
+
+        Toolbar toolbar = ((AppCompatActivity) getActivity()).findViewById(R.id.toolbar);
+        if (toolbar != null){
+            toolbar.setTitle(R.string.translator);
+        }
 
         return view;
     }
@@ -117,19 +129,15 @@ public class MainFragment extends Fragment {
             }
         });
 
-//        searchET.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                mViewModel.mainRVAdapter.getFilter().filter(charSequence);
-//                setVisibilityState(mViewModel.mainRVAdapter.isEmpty());
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {}
-//        });
+        RxTextView.textChanges(searchET)
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<CharSequence>() {
+                    @Override
+                    public void call(CharSequence s) {
+                        mViewModel.mainRVAdapter.getFilter().filter(s);
+                        setVisibilityState(mViewModel.mainRVAdapter.isEmpty());
+                    }});
 
         searchET.setImeActionLabel("Filter", 1);
         searchET.setPrivateImeOptions("actionUnspecified");

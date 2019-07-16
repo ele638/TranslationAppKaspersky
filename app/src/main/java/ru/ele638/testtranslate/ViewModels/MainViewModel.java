@@ -20,6 +20,7 @@ import ru.ele638.testtranslate.Adapters.LanguageSpinnerAdapter;
 import ru.ele638.testtranslate.Adapters.MainWordsRVAdapter;
 import ru.ele638.testtranslate.BuildConfig;
 import ru.ele638.testtranslate.Helpers.BaseSchedulerProvider;
+import ru.ele638.testtranslate.Helpers.OnWordInterractionListener;
 import ru.ele638.testtranslate.Helpers.Room.AppDatabase;
 import ru.ele638.testtranslate.Models.Language;
 import ru.ele638.testtranslate.Models.UserWord;
@@ -38,6 +39,24 @@ public class MainViewModel extends ViewModel {
     private AppDatabase database;
     private YaTranslateApi translateApi;
     private BaseSchedulerProvider schedulerProvider;
+
+    public MainViewModel() {
+        mainRVAdapter.setListener(new OnWordInterractionListener() {
+            @Override
+            public void updateWord(final UserWord word) {
+                schedulerProvider.io().scheduleDirect(new Runnable() {
+                    @Override
+                    public void run() {
+                        database.userWordDao().update(word);
+                    }
+                });
+            }
+
+            @Override
+            public void deleteWord(UserWord word) {}
+        });
+        mainRVAdapter.setDeletionMode(false);
+    }
 
     public void setSchedulerProvider(BaseSchedulerProvider provider) {
         this.schedulerProvider = provider;

@@ -22,6 +22,8 @@ public class UserWord {
 
     private String translateWord;
 
+    private int isFavorite;
+
     public UserWord(String text, Language srcLang, Language dstLang) {
         this.text = text;
         this.srcLang = srcLang;
@@ -85,4 +87,15 @@ public class UserWord {
         this.translateWord = translateWord;
     }
 
+    public int getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(int isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
+    public void switchIsFavorite(){
+        if (isFavorite == 1) isFavorite = 0; else isFavorite = 1;
+    }
 }

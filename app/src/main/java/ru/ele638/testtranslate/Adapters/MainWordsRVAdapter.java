@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import ru.ele638.testtranslate.Helpers.OnWordInterractionListener;
 import ru.ele638.testtranslate.Helpers.UserWordDiffutilCallback;
 import ru.ele638.testtranslate.Models.UserWord;
 import ru.ele638.testtranslate.R;
@@ -22,6 +24,12 @@ public class MainWordsRVAdapter extends RecyclerView.Adapter<MainWordsRVAdapter.
 
     private ArrayList<UserWord> userWords = new ArrayList<>();
     private ArrayList<UserWord> userWordsFiltered = new ArrayList<>();
+    private OnWordInterractionListener listener;
+    private boolean deletionMode;
+
+    public void setListener(OnWordInterractionListener listener){
+        this.listener = listener;
+    }
 
     @NonNull
     @Override
@@ -30,8 +38,8 @@ public class MainWordsRVAdapter extends RecyclerView.Adapter<MainWordsRVAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        UserWord word = userWordsFiltered.get(position);
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        final UserWord word = userWordsFiltered.get(position);
         holder.userWordText.setText(word.getTextForCard());
         if (word.isEmptyTranslation()) {
             holder.loadingLayout.setVisibility(View.VISIBLE);
@@ -41,6 +49,28 @@ public class MainWordsRVAdapter extends RecyclerView.Adapter<MainWordsRVAdapter.
             holder.translationsText.setVisibility(View.VISIBLE);
             holder.translationsText.setText(word.getTranslation());
         }
+        holder.setFavBtnState(word.getIsFavorite() == 1);
+
+        holder.favBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                word.switchIsFavorite();
+                holder.setFavBtnState(word.getIsFavorite() == 1);
+                listener.updateWord(word);
+            }
+        });
+
+        holder.delBtn.setVisibility(deletionMode ? View.VISIBLE : View.GONE);
+        holder.favBtn.setVisibility(deletionMode ? View.GONE : View.VISIBLE);
+
+        holder.delBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (deletionMode){
+                    listener.deleteWord(word);
+                }
+            }
+        });
     }
 
     @Override
@@ -91,15 +121,30 @@ public class MainWordsRVAdapter extends RecyclerView.Adapter<MainWordsRVAdapter.
         };
     }
 
+    public void setDeletionMode(boolean deletionMode) {
+        this.deletionMode = deletionMode;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView userWordText, translationsText;
         LinearLayout loadingLayout;
+        ImageButton favBtn, delBtn;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             userWordText = itemView.findViewById(R.id.user_word_cardview_text);
             translationsText = itemView.findViewById(R.id.user_word_cardview_translations);
             loadingLayout = itemView.findViewById(R.id.user_word_cardview_loading_layout);
+            favBtn = itemView.findViewById(R.id.user_word_cardview_fav_toggle);
+            delBtn = itemView.findViewById(R.id.user_word_delete_btn);
+        }
+
+        public void setFavBtnState(boolean state){
+            if (state){
+                favBtn.setImageResource(R.drawable.fav_on);
+            } else {
+                favBtn.setImageResource(R.drawable.fav_off);
+            }
         }
     }
 }
