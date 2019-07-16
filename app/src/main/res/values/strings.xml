@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TestTranslate</string>
+    <string name="search_or_add_word">Search or add word</string>
+    <string name="add_word">Add word</string>
+    <string name="empty_list">Empty list</string>
+    <string name="loading_translations">Loading translations</string>
+</resources>

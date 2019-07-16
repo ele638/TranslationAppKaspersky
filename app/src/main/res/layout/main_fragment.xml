@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Views.MainFragment">
+
+    <EditText
+        android:id="@+id/main_search_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@id/main_add_btn"
+        android:layout_toLeftOf="@id/main_add_btn"
+        android:hint="@string/search_or_add_word"
+        android:inputType="text"
+        android:singleLine="true"
+        tools:ignore="Autofill" />
+
+    <Button
+        android:id="@+id/main_add_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/main_lang_layout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/add_word" />
+
+    <LinearLayout
+        android:id="@+id/main_lang_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_search_edit_text"
+        android:orientation="horizontal"
+        android:weightSum="21">
+
+        <Spinner
+            android:id="@+id/main_source_lang_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="10" />
+
+        <ImageButton
+            android:id="@+id/main_lang_switch"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:src="@drawable/arrows" />
+
+        <Spinner
+            android:id="@+id/main_dest_lang_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="10" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/main_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_lang_layout"
+        android:layout_alignParentBottom="true"
+        tools:listitem="@layout/user_word_cardview" />
+
+    <TextView
+        android:id="@+id/main_empty_state_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_lang_layout"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="@string/empty_list" />
+</RelativeLayout>
